@@ -1,58 +1,71 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useAuth } from "@/components/auth-provider"
-import { useRouter } from "next/navigation"
-import { useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-import { Home, Users, UtensilsCrossed, DollarSign, ShoppingCart, ClipboardList, Settings, LogOut } from "lucide-react"
+import { useAuth } from "@/components/auth-provider";
+import { Button } from "@/components/ui/button";
+import {
+  ClipboardList,
+  DollarSign,
+  Home,
+  LogOut,
+  Settings,
+  ShoppingCart,
+  Users,
+  UtensilsCrossed,
+} from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  const { user, logout, isLoading } = useAuth()
-  const router = useRouter()
+  const { user, logout, isLoading } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push("/login")
+      router.push("/login");
     }
-  }, [user, isLoading, router])
+  }, [user, isLoading, router]);
 
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-lg">Loading...</div>
       </div>
-    )
+    );
   }
 
   if (!user) {
-    return null
+    return null;
   }
 
   const handleLogout = () => {
-    logout()
-    router.push("/")
-  }
+    logout();
+    router.push("/");
+  };
 
   const navigation = [
     { name: "Dashboard", href: "/dashboard", icon: Home },
     { name: "Meals", href: "/dashboard/meals", icon: UtensilsCrossed },
     { name: "Finances", href: "/dashboard/finances", icon: DollarSign },
     { name: "Grocery", href: "/dashboard/grocery", icon: ShoppingCart },
-    { name: "Responsibilities", href: "/dashboard/responsibilities", icon: ClipboardList },
+    {
+      name: "Responsibilities",
+      href: "/dashboard/responsibilities",
+      icon: ClipboardList,
+    },
     ...(user.role === "admin"
       ? [
           { name: "Members", href: "/dashboard/members", icon: Users },
           { name: "Settings", href: "/dashboard/settings", icon: Settings },
         ]
       : []),
-  ]
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -62,10 +75,14 @@ export default function DashboardLayout({
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
               <h1 className="text-xl font-bold text-green-600">MessManager</h1>
-              <span className="ml-4 text-sm text-gray-500">Welcome, {user.name}</span>
+              <span className="ml-4 text-sm text-gray-500">
+                Welcome, {user.name}
+              </span>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600 capitalize">{user.role}</span>
+              <span className="text-sm text-gray-600 capitalize">
+                {user.role}
+              </span>
               <Button variant="outline" size="sm" onClick={handleLogout}>
                 <LogOut className="h-4 w-4 mr-2" />
                 Logout
@@ -81,7 +98,7 @@ export default function DashboardLayout({
           <nav className="mt-8">
             <div className="px-4">
               {navigation.map((item) => {
-                const Icon = item.icon
+                const Icon = item.icon;
                 return (
                   <Link
                     key={item.name}
@@ -91,7 +108,7 @@ export default function DashboardLayout({
                     <Icon className="mr-3 h-5 w-5" />
                     {item.name}
                   </Link>
-                )
+                );
               })}
             </div>
           </nav>
@@ -101,5 +118,5 @@ export default function DashboardLayout({
         <main className="flex-1 p-8">{children}</main>
       </div>
     </div>
-  )
+  );
 }
